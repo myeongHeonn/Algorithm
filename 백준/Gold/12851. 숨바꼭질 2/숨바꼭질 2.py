@@ -20,9 +20,8 @@ def bfs():
             continue
 
         for nx in [x-1, x+1, 2*x]:
-            if nx < 0 or nx > MAX:
+            if nx < 0 or nx > 100000:
                 continue
-            # 방문하지 않았거나 다음 방문이 이전 방문보다 1보다 크면
             if visited[nx] == 0 or visited[nx] == visited[x] + 1:
                 queue.append(nx)
                 visited[nx] = visited[x] + 1
