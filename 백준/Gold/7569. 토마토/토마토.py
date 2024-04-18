@@ -23,6 +23,16 @@ for i in range(h):
             if box[i][j][k] == 1:
                 tomatos.append((i, j, k))
                 visited[i][j][k] = 0
+# 박스에 안 익은 토마토가 존재할시 True / 다 익어있을시 False
+def tomato_state():
+    global h, n, m
+    for i in range(h):
+        for j in range(n):
+            for k in range(m):
+                if box[i][j][k] == 0:
+                    return True
+    return False
+
 # bfs
 def bfs():
     global days
@@ -49,25 +59,11 @@ def bfs():
                 queue.append((nz, nx, ny))
                 days = max(days, visited[nz][nx][ny])
 
-# 저장될 때부터 모든 토마토가 익어있는 상태 확인
-flag = False
-flag2 = True
-for i in range(h):
-    for j in range(n):
-        for k in range(m):
-            if box[i][j][k] == 0:
-                flag = True
-
-if not flag:
+if not tomato_state():
     print(0)
 else:
     bfs()
-    for i in range(h):
-        for j in range(n):
-            for k in range(m):
-                if box[i][j][k] == 0:
-                    flag2 = False
-    if not flag2:
+    if tomato_state():
         print(-1)
     else:
         print(days)
