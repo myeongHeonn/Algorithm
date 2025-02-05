@@ -1,43 +1,23 @@
+from itertools import combinations
+from collections import Counter
+
 def solution(orders, course):
     answer = []
-    for count in course:
-        orders_dic = {}
-        arr = []
+
+    for c in course:
+        order_list = []
         for order in orders:
-            if len(order) < count:
+            if len(order) < c:
                 continue
-            s = []
-            check = [False] * len(order)
-            dfs(arr, order, count, 0, s, check)
+            order_list += list(combinations(sorted(order), c))
 
-        for a in arr:
-            if a in orders_dic:
-                orders_dic[a] += 1
-            else:
-                orders_dic[a] = 1
+        order_count = Counter(order_list)
+        max_count = 0
+        if order_count:
+            max_count = max(order_count.values())
 
-        max_order_count = 0
-        if orders_dic:
-            max_order_count = max(orders_dic.values())
-        for key in orders_dic:
-            if orders_dic[key] == max_order_count and orders_dic[key] > 1:
-                answer.append(key)
+        for word, count in order_count.items():
+            if 1 < max_count == count:
+                answer.append(''.join(word))
 
     return sorted(answer)
-
-# course개 만큼 만들수 있는 모든 조합
-# 메뉴 k개 모든 조합
-def dfs(arr, order, k, depth, temp, check):
-    if len(temp) == k:
-        temp = sorted(temp)
-        arr.append(''.join(temp))
-        return
-
-    for i in range(depth, len(order)):
-        if check[i]:
-            continue
-        check[i] = True
-        temp.append(order[i])
-        dfs(arr, order, k, i+1, temp, check)
-        temp.pop()
-        check[i] = False
