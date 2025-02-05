@@ -1,24 +1,22 @@
 def solution(id_list, report, k):
-    # (나를 신고한 사람, 신고 당한 횟수) 저장
-    id_list_dic = {}
-    for id in id_list:
-        id_list_dic[id] = [[], 0]
+    # dic[신고 당한 사람] = 신고한 사람 저장
+    reported_user = {}
     # 중복 신고 제거
     report = list(set(report))
 
     for r in report:
-        name_a = r.split()[0] # 신고한 사람
-        name_p = r.split()[1] # 신고당한 사람
-        id_list_dic[name_p][0].append(name_a)
-        id_list_dic[name_p][1] += 1
+        user_id, reported_id = r.split()
+        if reported_id not in reported_user:
+            reported_user[reported_id] = []
+        reported_user[reported_id].append(user_id)
 
-    answer = {}
-    for id in id_list:
-        answer[id] = 0
+    count = {}
+    for user_id in id_list:
+        count[user_id] = 0
 
-    for key in id_list_dic:
-        if id_list_dic[key][1] >= k:
-            for id in id_list_dic[key][0]:
-                answer[id] += 1
+    for key in reported_user:
+        if len(reported_user[key]) >= k:
+            for user_id in reported_user[key]:
+                count[user_id] += 1
 
-    return list(answer.values())
+    return list(count.values())
