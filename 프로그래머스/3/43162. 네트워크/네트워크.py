@@ -1,8 +1,8 @@
-def dfs(computers, visited, node):
+def dfs(node, visited, computers):
     visited[node] = True
-    for idx, connected in enumerate(computers[node]):
-        if connected and not visited[idx]:
-            dfs(computers, visited, idx)
+    for next_node in range(len(computers)):
+        if computers[node][next_node] and not visited[next_node]:
+            dfs(next_node, visited, computers)
 
 def solution(n, computers):
     answer = 0
@@ -11,7 +11,7 @@ def solution(n, computers):
     for i in range(n):
         if visited[i]:
             continue
-        dfs(computers, visited, i)
+        dfs(i, visited, computers)
         answer += 1
 
     return answer
