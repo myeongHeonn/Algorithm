@@ -3,12 +3,12 @@ def solution(n, wires):
     for a, b in wires:
         graph[a].append(b)
         graph[b].append(a)
-        
+
     def dfs(node, parent):
         cnt = 1
         for child in graph[node]:
             if child != parent:
-                cnt += dfs(child, node)
+                cnt += dfs(child, node)    
         return cnt
     
     answer = float("inf")
@@ -23,5 +23,5 @@ def solution(n, wires):
         
         graph[a].append(b)
         graph[b].append(a)
-        
+
     return answer
