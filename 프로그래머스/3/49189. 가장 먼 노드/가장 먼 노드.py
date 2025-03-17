@@ -2,7 +2,8 @@ from collections import defaultdict
 from collections import deque
 
 def solution(n, edge):
-    distance = [0 for _ in range(n+1)]
+    distance = [-1 for _ in range(n+1)]
+    distance[1] = 0
     graph = defaultdict(list)
 
     for a, b in edge:
@@ -10,21 +11,18 @@ def solution(n, edge):
         graph[b].append(a)
 
     queue = deque()
-    queue.append((1, 0)) # (현재 노드, 부모 노드)
+    queue.append(1)
 
     while queue:
-        node, parent = queue.popleft()
+        node = queue.popleft()
         k = distance[node]
 
         for next_node in graph[node]:
-            if next_node != parent and distance[next_node] == 0:
+            if distance[next_node] == -1:
                 distance[next_node] = k + 1
-                queue.append((next_node, node))
+                queue.append(next_node)
 
     max_len = max(distance)
-    answer = 0
-    for dist in distance:
-        if dist == max_len:
-            answer += 1
+    answer = distance.count(max_len)
 
     return answer
