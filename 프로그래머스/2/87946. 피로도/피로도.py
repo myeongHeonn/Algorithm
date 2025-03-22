@@ -1,26 +1,16 @@
 def solution(k, dungeons):
-    answer = []
     n = len(dungeons)
     visited = [False for _ in range(n)]
 
-    def dfs(k, count):
-        if all(visited):
-            answer.append(count)
-            return
+    def dfs(fatigue, cnt):
+        max_answer = cnt
 
         for i in range(n):
-            if visited[i]:
-                continue
-
-            if k >= dungeons[i][0]:
-                visited[i] = True
-                dfs(k - dungeons[i][1], count + 1)
-                visited[i] = False
-            else:
-                visited[i] = True
-                dfs(k, count)
+            if not visited[i] and fatigue >= dungeons[i][0]:
+                visited[i]= True
+                max_answer = max(max_answer, dfs(fatigue - dungeons[i][1], cnt + 1))
                 visited[i] = False
 
-    dfs(k, 0)
+        return max_answer
 
-    return max(answer)
+    return dfs(k, 0)
