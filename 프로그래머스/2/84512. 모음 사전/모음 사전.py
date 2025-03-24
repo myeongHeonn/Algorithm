@@ -1,20 +1,20 @@
-def make():
-    global temp
-
-    if len(temp) == 5:
-        return
-
-    for word in vowel:
-        temp += word
-        dict.append(temp)
-        make()
-        temp = temp[:-1]
-
-vowel = "AEIOU"
-dict = []
-temp = ""
-
 def solution(word):
-    make()
-    answer = dict.index(word) + 1
-    return answer
+    answer = []
+    result = []
+
+    def dfs(cur_word):
+        if cur_word == word:
+            result.append(len(answer))
+
+        for s in ['A', 'E', 'I', 'O', 'U']:
+            if len(cur_word) >= 5:
+                return
+
+            cur_word += s
+            answer.append(cur_word)
+            dfs(cur_word)
+            cur_word = cur_word[:-1]
+
+    dfs('')
+
+    return result[0]
