@@ -1,49 +1,38 @@
-def cal_score(ryan, apeach):
-    ryan_score, apeach_score = 0, 0
-    for i in range(11):
-        if ryan[i] == 0 and apeach[i] == 0:
-            continue
-        if ryan[i] > apeach[i]:
-            ryan_score += (10 - i)
-        else:
-            apeach_score += (10 - i)
-    return ryan_score, apeach_score
-
-def dfs(idx, arrows_left, ryan, info, max_diff, best_shot):
-    if idx == 11:
-        if arrows_left > 0:
-            ryan[10] += arrows_left
-
-        ryan_score, apeach_score = cal_score(ryan, info)
-        value = ryan_score - apeach_score
-
-        if value > max_diff[0]:
-            max_diff[0] = value
-            best_shot[0] = ryan[:]
-        elif value == max_diff[0] and value > 0:
-            for i in range(10, -1, -1):
-                if ryan[i] != best_shot[0][i]:
-                    if ryan[i] > best_shot[0][i]:
-                        best_shot[0] = ryan[:]
-                    break
-
-        if arrows_left > 0:
-            ryan[10] -= arrows_left
-        return
-
-    if arrows_left > info[idx]:
-        ryan[idx] = info[idx] + 1
-        dfs(idx + 1, arrows_left - ryan[idx], ryan, info, max_diff, best_shot)
-        ryan[idx] = 0
-
-    dfs(idx + 1, arrows_left, ryan, info, max_diff, best_shot)
-
+from itertools import combinations_with_replacement
+from collections import Counter
 
 def solution(n, info):
-    max_diff = [0]
-    best_shot = [[-1]]
-    ryan = [0] * 11
-
-    dfs(0, n, ryan, info, max_diff, best_shot)
-
-    return best_shot[0]
+    maxdiff, max_comb = 0, {}
+    
+    # 1. 주어진 조합에서 각각의 점수 계산
+    def calculate_score(combi):
+        score1, score2 = 0, 0
+        for i in range(1, 11):
+            if info[10 - i] < combi.count(i):
+                score1 += i
+            elif info[10 - i] > 0:
+                score2 += i
+        return score1, score2
+    
+    # 2. 최대 차이와 조합 저장
+    def calculate_diff(diff, cnt):
+        nonlocal maxdiff, max_comb
+        if diff > maxdiff:
+            max_comb = cnt
+            maxdiff = diff
+            
+    # 3. 가능한 라이언의 과녁 점수 조합의 모든 경우에 대해서 체크
+    for combi in combinations_with_replacement(range(11), n):
+        cnt  = Counter(combi)
+        score1, score2 = calculate_score(combi)
+        diff = score1 - score2
+        calculate_diff(diff, cnt)
+        
+    # 4. 점수 차이가 0 이상인 경우, 조합 반환    
+    if maxdiff > 0:
+        answer = [0] * 11
+        for n in max_comb:
+            answer[10 - n] = max_comb[n]
+        return answer
+    else:   # 5. 최대 차이가 0인 경우, -1 반환
+        return [-1]
