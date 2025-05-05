@@ -1,35 +1,28 @@
-def equal_str(str1, str2):
-    if len(str1) != len(str2):
-        return False
+from itertools import permutations
 
-    for i in range(len(str1)):
-        if str2[i] == '*':
-            continue
-        if str1[i] != str2[i]:
+def check(users, banned_id):
+    for i in range(len(banned_id)):
+        if len(users[i]) != len(banned_id[i]):
             return False
+
+        for j in range(len(users[i])):
+            if banned_id[i][j] == '*':
+                continue
+            if banned_id[i][j] != users[i][j]:
+                return False
 
     return True
 
 def solution(user_id, banned_id):
-    candidates = []
-    for b in banned_id:
-        possible = []
-        for u in user_id:
-            if equal_str(u, b):
-                possible.append(u)
-        candidates.append(possible)
+    random_user_id = list(permutations(user_id, len(banned_id)))
+    result = []
 
-    print(candidates)
-    result = set()
-    
-    def dfs(index, path):
-        if index == len(banned_id):
-            result.add(tuple(sorted(path)))
-            return
-        for user in candidates[index]:
-            if user not in path:
-                dfs(index + 1, path + [user])
-                
-    dfs(0, [])
+    for users in random_user_id:
+        if not check(users, banned_id):
+            continue
+        else:
+            users = set(users)
+            if users not in result:
+                result.append(users)
 
     return len(result)
