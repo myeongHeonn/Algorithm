@@ -1,15 +1,13 @@
-def solution(participant, completion):
-    dic = {}
+from collections import defaultdict
 
+def solution(participant, completion):
+    dic = defaultdict(int)
     for name in participant:
-        if name in dic:
-            dic[name] += 1
-        else:
-            dic[name] = 1
+        dic[name] += 1
 
     for name in completion:
         dic[name] -= 1
+        if dic[name] == 0:
+            del dic[name]
 
-    for key in dic.keys():
-        if dic[key] > 0:
-            return key
+    return list(dic.keys())[0]
