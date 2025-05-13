@@ -1,27 +1,19 @@
 from collections import deque
 
 def solution(priorities, location):
-    answer = []
     queue = deque()
-    for idx, priority in enumerate(priorities):
-        queue.append((idx, priority))
-    
+    for idx, p in enumerate(priorities):
+        queue.append((idx, p))
+
+    cnt = 1
     while queue:
-        now_idx, now_priority = queue.popleft()
-        flag = True
+        idx, time = queue.popleft()
+        if not queue:
+            return cnt
         
-        for next_idx, next_priority in list(queue):
-            if next_priority > now_priority:
-                queue.append((now_idx, now_priority))
-                flag = False
-                break
-        
-        if flag:
-            answer.append(now_idx)
-            
-    count = 1
-    for idx in answer:
-        if idx == location:
-            return count
+        if time >= max([t for i, t in queue]):
+            if idx == location:
+                return cnt
+            cnt += 1
         else:
-            count += 1
+            queue.append((idx, time))
