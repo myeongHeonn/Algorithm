@@ -1,38 +1,36 @@
+from collections import defaultdict
+import heapq
+
 def solution(genres, plays):
     answer = []
-    n = len(genres)
-    # 해당 장르에 속한 고유번호들
-    genre_num = {}
-    # 장르별 재생횟수 합
-    genre_sum = {}
-    for i in range(n):
-        if genres[i] in genre_num:
-            genre_num[genres[i]].append(i)
-        else:
-            genre_num[genres[i]] = [i]
+    dic = defaultdict(list)
+    dic_count = defaultdict(int)
+    for idx in range(len(genres)):
+        genre = genres[idx]
+        play = plays[idx]
+        dic[genre].append((play, idx))
+        dic_count[genre] += play
 
-        if genres[i] in genre_sum:
-            genre_sum[genres[i]] += plays[i]
-        else:
-            genre_sum[genres[i]] = plays[i]
+    heap = []
+    for g in dic_count:
+        heapq.heappush(heap, (-dic_count[g], g))
 
-    # 재생횟수 순서 기준으로 내림차순
-    sorted_genre_sum = dict(sorted(genre_sum.items(), key=lambda item: item[1], reverse=True))
+    print(heap)
 
-    for genre in sorted_genre_sum:
-        # genre_num = {"classic":[1,2,3], "pop":[1,2]}
-        # genre_num에 value 값을 재생횟수 순으로 정렬
-        plays_dic = {}
-        for no in genre_num[genre]:
-            plays_dic[no] = plays[no]
-        sorted_plays_dic = dict(sorted(plays_dic.items(), key=lambda item: item[1], reverse=True))
+    while heap:
+        count, genre = heapq.heappop(heap)
 
-        # 재생횟수가 높은 상위 2개를 ans
-        count = 0
-        for no in sorted_plays_dic:
-            if count == 2:
+        heap1 = []
+        for c, i in dic[genre]:
+            heapq.heappush(heap1, (-c, i))
+
+        cnt = 0
+        while heap1:
+            cnt += 1
+            play_count, idx = heapq.heappop(heap1)
+            answer.append(idx)
+
+            if cnt == 2:
                 break
-            answer.append(no)
-            count += 1
 
     return answer
