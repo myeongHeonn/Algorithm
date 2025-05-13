@@ -1,19 +1,21 @@
 import heapq
 
 def solution(scoville, K):
-    heapq.heapify(scoville)
-    answer = 0
-
-    while len(scoville) >= 2:
-        min1 = heapq.heappop(scoville)
-        if min1 >= K:
-            return answer
-
-        min2 = heapq.heappop(scoville)
-        new_value = min1 + min2 * 2
-
-        heapq.heappush(scoville, new_value)
-        answer += 1
-
-    # 마지막 남은 원소 확인
-    return answer if scoville[0] >= K else -1
+    heap = []
+    for s in scoville:
+        heapq.heappush(heap, s)
+        
+    count = 0
+    while heap:
+        low_1 = heapq.heappop(heap)
+        
+        if low_1 >= K:
+            return count
+        
+        if heap:
+            low_2 = heapq.heappop(heap)
+            value = low_1 + low_2 * 2
+            heapq.heappush(heap, value)
+            count += 1
+        else:
+            return -1
