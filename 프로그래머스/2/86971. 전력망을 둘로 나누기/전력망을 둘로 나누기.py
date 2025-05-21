@@ -1,27 +1,34 @@
-def solution(n, wires):
-    graph = [[] for _ in range(n+1)]
-    for a, b in wires:
-        graph[a].append(b)
-        graph[b].append(a)
+from collections import defaultdict
 
-    def dfs(node, parent):
-        cnt = 1
-        for child in graph[node]:
-            if child != parent:
-                cnt += dfs(child, node)    
-        return cnt
-    
-    answer = float("inf")
-    for a, b in wires:
-        graph[a].remove(b)
-        graph[b].remove(a)
-        
-        count_a = dfs(a, b)
-        count_b = n - count_a
-        
-        answer = min(answer, abs(count_a - count_b))
-        
-        graph[a].append(b)
-        graph[b].append(a)
+def solution(n, wires):
+    answer = float("INF")
+
+    tree = defaultdict(list)
+    for parent, child in wires:
+        tree[parent].append(child)
+        tree[child].append(parent)
+
+    for parent, child in wires:
+        tree[parent].remove(child)
+        tree[child].remove(parent)
+
+        visited = [False] * (n + 1)
+        count = 0
+
+        def dfs(node):
+            nonlocal count
+            count = max(count, visited.count(True))
+
+            for next_node in tree[node]:
+                if not visited[next_node]:
+                    visited[next_node] = True
+                    dfs(next_node)
+
+        dfs(list(tree.keys())[0])
+        m = n - count
+        answer = min(answer, abs(count - m))
+
+        tree[parent].append(child)
+        tree[child].append(parent)
 
     return answer
