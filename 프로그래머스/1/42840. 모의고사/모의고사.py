@@ -1,20 +1,27 @@
 def solution(answers):
-    patterns = [[1,2,3,4,5],
-                [2,1,2,3,2,4,2,5],
-                [3,3,1,1,2,2,4,4,5,5]]
-    
-    scores = [0] * 3
-    
-    for i, answer in enumerate(answers):
-        for j, pattern in enumerate(patterns):
-            if answer == pattern[i%len(pattern)]:
-                scores[j] += 1
-                
-    max_score = max(scores)
-    result = []
+    count = []
+    p1 = [1, 2, 3, 4, 5]
+    p2 = [2, 1, 2, 3, 2, 4, 2, 5]
+    p3 = [3, 3, 1, 1, 2, 2, 4, 4, 5, 5]
 
-    for i, score in enumerate(scores):
-        if score == max_score:
-            result.append(i+1)
-    
-    return result
+    cnt1 = 0
+    cnt2 = 0
+    cnt3 = 0
+
+    for idx, answer in enumerate(answers):
+        if p1[idx % 5] == answer:
+            cnt1 += 1
+        if p2[idx % 8] == answer:
+            cnt2 += 1
+        if p3[idx % 10] == answer:
+            cnt3 += 1
+
+    max_cnt = max(cnt1, cnt2, cnt3)
+    if max_cnt == cnt1:
+        count.append(1)
+    if max_cnt == cnt2:
+        count.append(2)
+    if max_cnt == cnt3:
+        count.append(3)
+
+    return count
