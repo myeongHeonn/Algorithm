@@ -1,20 +1,16 @@
+from itertools import product
+
 def solution(word):
-    answer = []
-    result = []
+    dictionary = []
+    vowels = ['A', 'E', 'I', 'O', 'U']
 
-    def dfs(cur_word):
-        if cur_word == word:
-            result.append(len(answer))
+    for i in range(1, 6):
+        permutation = list(product(vowels, repeat = i))
+        for p in permutation:
+            dictionary.append("".join(p))
 
-        for s in ['A', 'E', 'I', 'O', 'U']:
-            if len(cur_word) >= 5:
-                return
+    dictionary.sort()
 
-            cur_word += s
-            answer.append(cur_word)
-            dfs(cur_word)
-            cur_word = cur_word[:-1]
-
-    dfs('')
-
-    return result[0]
+    for idx, w in enumerate(dictionary):
+        if w == word:
+            return idx + 1
