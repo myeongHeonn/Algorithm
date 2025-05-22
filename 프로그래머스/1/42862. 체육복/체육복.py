@@ -1,11 +1,23 @@
 def solution(n, lost, reserve):
-    lost_set = set(lost) - set(reserve)
-    reserve_set = set(reserve) - set(lost)
+    self = []
+    for number in lost:
+        if number in reserve:
+            self.append(number)
+    for number in self:
+        lost.remove(number)
+        reserve.remove(number)
 
-    for r in sorted(reserve_set):
-        if r - 1 in lost_set:
-            lost_set.remove(r - 1)
-        elif r + 1 in lost_set:
-            lost_set.remove(r + 1)
+    # 체육복을 잃어 버린 학생수
+    m = len(lost)
+    
+    lost.sort()
+    r = [False] * (n + 1)
+    for number in lost:
+        if number - 1 in reserve and not r[number - 1]:
+            r[number - 1] = True
+            continue
+        if number + 1 in reserve and not r[number + 1]:
+            r[number + 1] = True
 
-    return n - len(lost_set)
+    cnt = r.count(True)
+    return n - m + cnt
