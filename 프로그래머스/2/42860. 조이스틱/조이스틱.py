@@ -1,14 +1,17 @@
 def solution(name):
-    # 상하 이동 조작 횟수
-    answer = sum(min(ord(c) - ord('A'), 26 - (ord(c) - ord('A'))) for c in name)
+    answer = sum([min(ord(alpha) - ord('A'), 26 - (ord(alpha) - ord('A'))) for alpha in name])
+    n = len(name)
+    min_move = n - 1
 
-    # 좌우 이동 최솟값 계산
-    move = len(name) - 1  # 기본은 오른쪽으로 쭉 가는 경우
-    for i in range(len(name)):
+    for i in range(n):
         next_i = i + 1
-        while next_i < len(name) and name[next_i] == 'A':
+        while next_i < n and name[next_i] == 'A':
             next_i += 1
-        distance = i + len(name) - next_i + min(i, len(name) - next_i)
-        move = min(move, distance)
+            # 이동거리: 앞에서 i까지 + 뒤에서 남은 거 처리하는 방식
+            distance = 2 * i + (n - next_i)
+            min_move = min(min_move, distance)
 
-    return answer + move
+            distance = i + 2 * (n - next_i)
+            min_move = min(min_move, distance)
+
+    return answer + min_move
