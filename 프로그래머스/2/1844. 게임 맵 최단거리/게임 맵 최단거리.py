@@ -1,35 +1,27 @@
 from collections import deque
 
 def solution(maps):
+    answer = -1
+    n, m = len(maps), len(maps[0])
+    visited = [[False] * m for _ in range(n)]
     dy = [-1, 1, 0, 0]
     dx = [0, 0, -1, 1]
-
-    n = len(maps)
-    m = len(maps[0])
-
-    dist = [[-1] * m for _ in range(n)]
-
     queue = deque()
-    queue.append((0, 0))
-    dist[0][0] = 1
-
+    queue.append((0, 0, 1)) # (y, x, 이동 횟수)
+    
     while queue:
-        y, x = queue.popleft()
-
-        if y == n-1 and x == m-1:
-            return dist[y][x]
-
+        y, x, move_cnt = queue.popleft()
+        if y == n - 1 and x == m - 1:
+            return move_cnt
+        
         for i in range(4):
             ny = y + dy[i]
             nx = x + dx[i]
-
-            if ny < 0 or ny >= n or nx < 0 or nx >= m:
-                continue
-            if  maps[ny][nx] == 0:
-                continue
-
-            if dist[ny][nx] == -1:
-                queue.append((ny, nx))
-                dist[ny][nx] = dist[y][x] + 1
-
-    return -1
+            
+            if (0 <= ny < n and 0 <= nx < m 
+                    and not visited[ny][nx] 
+                    and maps[ny][nx] == 1):
+                visited[ny][nx] = True
+                queue.append((ny, nx, move_cnt + 1))
+    
+    return answer
