@@ -1,17 +1,26 @@
-def dfs(node, visited, computers):
-    visited[node] = True
-    for next_node in range(len(computers)):
-        if computers[node][next_node] and not visited[next_node]:
-            dfs(next_node, visited, computers)
-
 def solution(n, computers):
     answer = 0
-    visited = [False for _ in range(n)]
+    graph = []
+    for idx, computer in enumerate(computers):
+        temp = []
+        for i in range(n):
+            if i == idx:
+                continue
+            if computer[i] == 1:
+                temp.append(i)
+        graph.append(temp)
+
+    visited = [False] * n
+
+    def dfs(node, parent):
+        for next_node in graph[node]:
+            if not visited[next_node] and next_node != parent:
+                visited[next_node] = True
+                dfs(next_node, node)
 
     for i in range(n):
-        if visited[i]:
-            continue
-        dfs(i, visited, computers)
-        answer += 1
+        if not visited[i]:
+            answer += 1
+            dfs(i, -1)
 
     return answer
