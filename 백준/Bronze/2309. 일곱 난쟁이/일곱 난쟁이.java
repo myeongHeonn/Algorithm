@@ -29,7 +29,7 @@ public class Main {
 				if (sum == 100) {
 					Arrays.sort(temp);
 					for (int x : temp) { System.out.println(x); }
-					break loop;
+					return;
 				}
 			}
 		}
