@@ -1,3 +1,19 @@
+/**
+ * @Problem : BOJ 2637 장난감 조립
+ * @Category : 위상 정렬
+ * @Time : 104 ms (시간 제한 : 1초)
+ * @Memory : 14 MB (메모리 제한 : 128 MB)
+ * 
+ * @Idea
+ * dp[i][j] -> i번 부품을 조립하는데 필요한 기본 부품 j 수
+ * 
+ * @TimeComplexity : O(M * B)
+ * @SpaceComplexity : O(N^2)
+ * N <= 100
+ * M <= 100
+ * B <= N - 1 = 99
+ */
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
@@ -46,12 +62,12 @@ public class Main {
         
         Queue<Pair> q = new ArrayDeque<>();
         int[][] dp = new int[N + 1][N];
-        List<Integer> basic = new ArrayList<>();
+        boolean[] isBasic = new boolean[N + 1];
         
         for (int i = 1; i <= N; i++) {
             if (indegree[i] == 0) {
                 q.offer(new Pair(i, 1));
-                basic.add(i);
+                isBasic[i] = true;
             }
         }
         
@@ -59,12 +75,14 @@ public class Main {
             Pair cur = q.poll();
             
             for (Pair next : edges[cur.to]) {
-                if (basic.contains(cur.to)) { 
+                if (isBasic[cur.to]) { 
                     dp[next.to][cur.to] += next.cost;
                 }
                 else {
-                	for (int x : basic) {
-                		dp[next.to][x] += dp[cur.to][x] * next.cost;
+                	for (int i = 1; i <= N; i++) {
+                		if (isBasic[i]) {
+                			dp[next.to][i] += dp[cur.to][i] * next.cost;
+                		}
                 	}
                 }
                 
@@ -76,9 +94,11 @@ public class Main {
             }
         }
         
-        for (int x : basic) {
-            sb.append(x).append(" ").append(dp[N][x]).append("\n");
-        }
+    	for (int i = 1; i <= N; i++) {
+    		if (isBasic[i]) {
+    			sb.append(i).append(" ").append(dp[N][i]).append("\n");
+    		}
+    	}
         
         System.out.println(sb);
     }
