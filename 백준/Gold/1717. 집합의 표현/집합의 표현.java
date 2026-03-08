@@ -6,20 +6,16 @@ public class Main {
 	
 	static int[] uf;
 	
-	static void union(int a, int b) {
-		int root_a = find(a);
-		int root_b = find(b);
+	static void union(int x, int y) {
+		int X = find(x);
+		int Y = find(y);
 		
-		uf[root_a] = root_b;
+		uf[X] = Y;
 	}
 	
 	static int find(int x) {
 		if (uf[x] == x) return x;
-		
-		int root = find(uf[x]);
-		uf[x] = root;
-		
-		return uf[x];
+		return uf[x] = find(uf[x]);
 	}
 
 	public static void main(String[] args) throws Exception {
