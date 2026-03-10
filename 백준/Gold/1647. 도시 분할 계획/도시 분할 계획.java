@@ -1,21 +1,20 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-class Tuple implements Comparable<Tuple> {
-	int x;
-	int y;
+class Edge implements Comparable<Edge>{
+	int to;
 	int cost;
 	
-	public Tuple (int x, int y, int cost) {
-		this.x = x;
-		this.y = y;
+	public Edge (int to, int cost) {
+		this.to = to;
 		this.cost = cost;
 	}
 
 	@Override
-	public int compareTo(Tuple o) {
+	public int compareTo(Edge o) {
 		return this.cost - o.cost;
 	}
 }
@@ -24,19 +23,8 @@ public class Main {
 	
 	static final int MAX_N = 100_000;
 	
-	static int[] uf = new int[MAX_N + 1];
-	
-	static void union(int x, int y) {
-		int X = find(x);
-		int Y = find(y);
-		
-		uf[X] = Y;
-	}
-	
-	static int find(int x) {
-		if (uf[x] == x) return x;
-		return uf[x] = find(uf[x]);
-	}
+	static ArrayList<Edge>[] graph = new ArrayList[MAX_N + 1];
+	static boolean[] visited = new boolean[MAX_N + 1];
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -48,10 +36,8 @@ public class Main {
 		int M = Integer.parseInt(st.nextToken());
 		
 		for (int i = 1; i <= N; i++) {
-			uf[i] = i;
+			graph[i] = new ArrayList<>();
 		}
-		
-		Tuple[] edges = new Tuple[M];
 		
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
@@ -60,24 +46,29 @@ public class Main {
 			int b = Integer.parseInt(st.nextToken());
 			int c = Integer.parseInt(st.nextToken());
 			
-			edges[i] = new Tuple(a, b, c);
+			graph[a].add(new Edge(b, c));
+			graph[b].add(new Edge(a, c));
 		}
 		
-		Arrays.sort(edges);
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		
+		pq.offer(new Edge(1, 0));
 		
 		int maxCost = 0;
 		int mstCost = 0;
 		
-		for (int i = 0; i < M; i++) {
-			int x = edges[i].x;
-			int y = edges[i].y;
-			int cost = edges[i].cost;
+		while (!pq.isEmpty()) {
+			Edge cur = pq.poll();
 			
-			if (find(x) != find(y)) {
-				mstCost += cost;
-				maxCost = Math.max(maxCost, cost);
-				
-				union(x, y);
+			if (visited[cur.to]) continue;
+			
+			visited[cur.to] = true;
+			mstCost += cur.cost;
+			maxCost = Math.max(maxCost, cur.cost);
+			
+			for (Edge next : graph[cur.to]) {
+				if (visited[next.to]) continue;
+				pq.offer(next);
 			}
 		}
 		
