@@ -21,20 +21,18 @@ class Node implements Comparable<Node>{
 }
 
 public class Main {
-
-    static int INF = 1_000_000_000;
     
+    static int INF = 1_000_000_000;
     static ArrayList<Node>[] graph;
     static int[] dist;
-    
+
     public static void main(String[] args) throws IOException {
-        
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br =  new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
-        
+
         graph = new ArrayList[N + 1];
         dist = new int[N + 1];
         
@@ -66,19 +64,21 @@ public class Main {
         sb.append(dist[A]).append("\n");
         
         int now = A;
-        sb.append(now).append(" ");
+        
+        sb.append(now + " ");
         
         while (now != B) {
-            int nextVertex = INF;
+            
+            int minVertex = INF;
             
             for (Node next : graph[now]) {
                 if (dist[now] == next.cost + dist[next.to]) {
-                    nextVertex = Math.min(nextVertex, next.to);
+                    minVertex = Math.min(minVertex, next.to);
                 }
             }
             
-            now = nextVertex;
-            sb.append(now).append(" ");
+            now = minVertex;
+            sb.append(now + " ");
         }
         
         System.out.println(sb);
